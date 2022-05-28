@@ -55,7 +55,7 @@ model.add(Dense(units=10,activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-train_history = model.fit(data_train_x,data_train_y, batch_size=128, epochs=50, verbose=1, validation_split=0.05)
+train_history = model.fit(data_train_x,data_train_y, batch_size=128, epochs=55, verbose=1, validation_split=0.05)
 score = model.evaluate(data_test_x,data_test_y,verbose=0)
 print('Test loss:', score[0])
 print('Test acc:', score[1])
