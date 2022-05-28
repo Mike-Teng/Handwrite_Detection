@@ -1,11 +1,10 @@
-from tensorflow.keras.models import Model, load_model, Sequential
-from tensorflow.keras.layers import Input, Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 from matplotlib import pyplot as plt
 import numpy as np
 import os
-import random
 
 def data_process(datapath):
     pic_count = 0
