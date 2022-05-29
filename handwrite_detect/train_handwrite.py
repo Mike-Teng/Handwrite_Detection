@@ -1,5 +1,6 @@
+from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNormalization
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -39,28 +40,35 @@ data_test_x, data_test_y = data_process(testdatapath)
 model = Sequential()
 model.add(Conv2D(64,kernel_size=(3,3),activation='relu',input_shape=(28,28,1)))
 model.add(Conv2D(64,kernel_size=(3,3),activation='relu'))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.2))
+
 model.add(Conv2D(128,kernel_size=(3,3),activation='relu'))
 model.add(Conv2D(128,kernel_size=(3,3),activation='relu'))
+model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.2))
+
+# model.add(Dropout(0.1))
 model.add(Flatten())
-model.add(Dropout(0.2))
+model.add(Dropout(0.1))
+
 model.add(Dense(128,activation='relu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.25))
 model.add(Dense(64,activation='relu'))
+model.add(Dropout(0.25))
 model.add(Dense(units=10,activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-train_history = model.fit(data_train_x,data_train_y, batch_size=128, epochs=55, verbose=1, validation_split=0.05)
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.8, patience=5, min_lr=0.00001)
+train_history = model.fit(data_train_x,data_train_y, batch_size=128, epochs=60, verbose=1, callbacks=[reduce_lr], validation_split = 0.2)
+
 score = model.evaluate(data_test_x,data_test_y,verbose=0)
 print('Test loss:', score[0])
 print('Test acc:', score[1])
 
-plt.plot(train_history.history['loss'])
-plt.plot(train_history.history['val_loss'])
-plt.plot(train_history.history['val_accuracy'])
-plt.title('train history')
-plt.show()
+# plt.plot(train_history.history['loss'])
+# plt.plot(train_history.history['val_loss'])
+# plt.plot(train_history.history['val_accuracy'])
+# plt.title('train history')
+# plt.show()
